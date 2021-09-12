@@ -1,0 +1,20 @@
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugiat, tenetur maxime itaque aliquam culpa explicabo, inventore rem autem officia, soluta perspiciatis mollitia rerum? Ad minus rem quia delectus quasi non.
+
+<CurrencyFormat 
+                renderText={(value) => (
+                    <>
+                        <p>
+                            Subtotal ({basket.length} items);
+                            <strong>{` ${value}`}</strong>
+                        </p>
+                        <small className="subtotal__gift">
+                            <input type="checkbox"/>This order contains a gift
+                        </small>
+                    </>
+                )}
+                decimalScale = {2}
+                value={getBasketTotal(basket)}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"₹"}
+            />
