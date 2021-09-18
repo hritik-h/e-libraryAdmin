@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -6,8 +6,8 @@ import Fade from '@material-ui/core/Fade';
 import { Grid, Paper} from '@material-ui/core';
 import {useForm,Form} from './useForm';
 import Controls from '../controls/Controls';
-import * as bookService from '../../Services/BookService'
-import axios from 'axios'
+import * as bookService from '../../Services/BookService';
+import axios from 'axios';
 
 const initialValues = {
   title: '',
@@ -67,15 +67,33 @@ export default function AddModal(props) {
     console.log(pic)
   }
 
+  useEffect(() => {
+    if(props.title === "update") {
+      setValues(props.load);
+    }
+  });
+
+  
   function handleSubmit(){
     console.log(values)
-    axios.post("http://localhost:8080/admin/add-books",values)
-    .then(responce =>{
-      console.log(responce);
-    })
-    .catch(error =>{
-      console.log(error);
-    })
+    if(props.title === "update"){
+      axios.post(`http://localhost:8080/admin/update-book/${props.id}`,values)
+      .then(responce =>{
+        console.log(responce);
+      })
+      .catch(error =>{
+        console.log(error);
+      })
+    }else{
+      axios.post("http://localhost:8080/admin/add-books",values)
+      .then(responce =>{
+        console.log(responce);
+      })
+      .catch(error =>{
+        console.log(error);
+      })
+    }
+    
   }
 
   
@@ -147,8 +165,9 @@ export default function AddModal(props) {
                             />
                             <label htmlFor="raised-button-file">
                               <Controls.Button 
-                              variant="raised" 
+                              varient="contained"
                               component="span" 
+                              color="secondary"
                               text="Upload"
                               onClick={handleUpload}
                               />
@@ -165,9 +184,10 @@ export default function AddModal(props) {
                             />
                             <label htmlFor="raised-button-file">
                               <Controls.Button 
-                              variant="raised" 
+                              varient="contained"
                               component="span" 
                               text="Upload"
+                              color="secondary"
                               />
                             </label>
                         </Grid>
@@ -184,9 +204,10 @@ export default function AddModal(props) {
                             />
                             <label htmlFor="raised-button-file">
                               <Controls.Button 
-                              variant="raised" 
+                              varient="contained"
                               component="span" 
                               text="Upload"
+                              color="secondary"
                               />
                             </label>
                         </Grid>
@@ -200,10 +221,11 @@ export default function AddModal(props) {
                               type="file"
                             />
                             <label htmlFor="raised-button-file">
-                              <Controls.Button 
-                              variant="raised" 
+                              <Controls.Button  
+                              varient="contained"
                               component="span" 
                               text="Upload"
+                              color="secondary"
                               />
                             </label>
                           </Grid>
@@ -241,12 +263,14 @@ export default function AddModal(props) {
                       />
                     <div>
                       <Controls.Button
+                        varient="contained"
                         type = "submit"
                         text="Submit"
                       />
                       <Controls.Button
+                      varient="contained"
                         text="Reset"
-                        color="primary"
+                        color="default"
                       />
                     </div>
                   </Grid>

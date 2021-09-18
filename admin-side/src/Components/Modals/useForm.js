@@ -9,7 +9,7 @@ export function useForm(initialValues) {
     const handleInputChange= e=>{
         console.log("inside handleInputChange")
         const {name,value} = e.target
-        console.log(value)
+        console.log(value);
         setValues({
           ...values,
           [name]: value,

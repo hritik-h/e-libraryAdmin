@@ -1,12 +1,32 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Controls from '../controls/Controls';
-import { initialValues } from '../../Services/BookAttributes';
-import { useForm } from './useForm';
 import { Grid } from '@material-ui/core';
+import {useForm} from './useForm';
+import axios from 'axios';
+import AddModal from './AddModal';
+
+
+const initialValues = {
+  title: '',
+  author: '',
+  edition: '',
+  type: '',
+  price: 0,
+  publishDate: new Date(),
+  edition: '',
+  totalNumber: "",
+  description: "",
+  coverpic: [],
+  image1: [],
+  image2: [],
+  image3: [],
+  image4: []
+}
+
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',
@@ -25,11 +45,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeleteModal(props) {
-  const classes = useStyles();
-  const {open, setOpen} = props;
+  const [openAdd,setOpenAdd] = useState(false);
   const {values,setValues,handleInputChange} = useForm(initialValues);
+
+  const classes = useStyles();
+  const [id, setId] = useState('');
+  const {open, setOpen} = props;
+
+  const onChangeHandler = event => {
+    setId(event.target.value);
+  };
   function handleClose(){
     setOpen(false);
+  }
+
+  function handleSubmit(){
+    console.log(id)
+    axios.get(`http://localhost:8080/admin/get-book/${id}`)
+    .then(response =>{
+      console.log(response.data);
+      setValues(response.data);
+    })
+    .catch(error =>{
+      console.log(error);
+    })
+    setOpen(false);
+    setOpenAdd(true);
   }
   return (
     <div>
@@ -48,22 +89,32 @@ export default function DeleteModal(props) {
         <Fade in={open}>
           <div className={classes.paper}>
             <h2 className={classes.heading}>Update modal</h2>
-              <Grid container spacing={0} direction="row" alignItems="center" justify="center">
+              <Grid container spacing={0} direction="row" alignItems="center" justifyContent="center">
                   <Grid item xs={3}>
                     <Controls.Input
                                 name = "id"
                                 label= "Id"
-                                value= {initialValues.id}
-                                onChange={handleInputChange}
+                                value= {id}
+                                onChange={onChangeHandler}
                               />
                     <Controls.Button
-                                text="Delete"
+                                onClick={handleSubmit}
+                                text="Update"
                               />
                   </Grid>
               </Grid>
           </div>
         </Fade>
       </Modal>
+
+      <AddModal
+        open = {openAdd}
+        setOpen = {setOpenAdd}
+        load = {values}
+        title = "update"
+        id = {id}
+      >
+      </AddModal>
     </div>
   );
 }
